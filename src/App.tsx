@@ -17,29 +17,31 @@ type TrayItem = {
   totalPrice: number;
 };
 
+// 2. Update your menuItems list
 const menuItems: MenuItem[] = [
-  { id: 1, name: 'Cinnamon & Sugar', price: 'R10', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Cinnamon+%26+Sugar' },
-  { id: 2, name: 'Banana', price: 'R15', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Banana' },
-  { id: 3, name: 'Milk Tart Filling', price: 'R15', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Milk+Tart+Filling' },
-  { id: 4, name: 'Caramel', price: 'R14', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Caramel' },
-  { id: 5, name: 'Nutella', price: 'R20', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Nutella' },
-  { id: 6, name: 'Caramel & Banana', price: 'R20', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Caramel+%26+Banana' },
-  { id: 7, name: 'Nutella & Banana', price: 'R25', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Nutella+%26+Banana' },
+  { id: 1, name: 'Cinnamon & Sugar', price: 'R10', images: ['/cinnamon-1.jpg', '/cinnamon-2.jpg'] },
+  { id: 2, name: 'Banana', price: 'R15', images: ['/banana-1.jpg', '/banana-2.jpg'] },
+  { id: 3, name: 'Milk Tart Filling', price: 'R15', images: ['/milktart-1.jpg', '/milktart-2.jpg'] },
+  { id: 4, name: 'Caramel', price: 'R14', images: ['/caramel-1.jpg', '/caramel-2.jpg'] },
+  { id: 5, name: 'Nutella', price: 'R20', images: ['/nutella-1.jpg', '/nutella-2.jpg'] },
+  { id: 6, name: 'Caramel & Banana', price: 'R20', images: ['/caramelbanana-1.jpg', '/caramelbanana-2.jpg'] },
+  { id: 7, name: 'Nutella & Banana', price: 'R25', images: ['/nutellabanana-1.jpg', '/nutellabanana-2.jpg'] },
 ];
 
+// 3. Update your cafeMenuItems list
 const cafeMenuItems: MenuItem[] = [
-  { id: 1, name: 'Cinnamon & Sugar', price: 'R15 — R25', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Cinnamon+%26+Sugar' },
-  { id: 2, name: 'Banana', price: 'R15 — R28', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Banana' },
-  { id: 3, name: 'Caramel', price: 'R20 — R38', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Caramel' },
-  { id: 4, name: 'Milk Tart Filling', price: 'R20 — R38', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Milk+Tart+Filling' },
-  { id: 5, name: 'Lemon Curd Filling', price: 'R20 — R38', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Lemon+Curd+Filling' },
-  { id: 6, name: 'Nutella', price: 'R25 — R48', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Nutella' },
-  { id: 7, name: 'Caramel & Banana', price: 'R25 — R48', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Caramel+%26+Banana' },
-  { id: 8, name: 'Nutella & Banana', price: 'R30 — R58', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Nutella+%26+Banana' },
-  { id: 9, name: 'Biscoff', price: 'R30 — R58', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Biscoff' },
-  { id: 10, name: 'Caramel & Strawberries', price: 'R35 — R65', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Caramel+%26+Strawberries' },
-  { id: 11, name: 'Nutella & Strawberries', price: 'R35 — R65', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Nutella+%26+Strawberries' },
-  { id: 12, name: 'Waffle Wednesday', price: 'R65', image: 'https://placehold.co/600x450/1f1f1f/404040?text=Waffle+Wednesday' },
+  { id: 1, name: 'Cinnamon & Sugar', price: 'R15 - R25', images: ['/cinnamon-1.jpg', '/cinnamon-2.jpg'] },
+  { id: 2, name: 'Banana', price: 'R15 - R28', images: ['/banana-1.jpg', '/banana-2.jpg'] },
+  { id: 3, name: 'Caramel', price: 'R20 - R38', images: ['/caramel-1.jpg', '/caramel-2.jpg'] },
+  { id: 4, name: 'Milk Tart Filling', price: 'R20 - R38', images: ['/milktart-1.jpg', '/milktart-2.jpg'] },
+  { id: 5, name: 'Lemon Curd Filling', price: 'R20 - R38', images: ['/lemon-1.jpg', '/lemon-2.jpg'] },
+  { id: 6, name: 'Nutella', price: 'R25 - R48', images: ['/nutella-1.jpg', '/nutella-2.jpg'] },
+  { id: 7, name: 'Caramel & Banana', price: 'R25 - R48', images: ['/caramelbanana-1.jpg', '/caramelbanana-2.jpg'] },
+  { id: 8, name: 'Nutella & Banana', price: 'R30 - R58', images: ['/nutellabanana-1.jpg', '/nutellabanana-2.jpg'] },
+  { id: 9, name: 'Biscoff', price: 'R30 - R58', images: ['/biscoff-1.jpg', '/biscoff-2.jpg'] },
+  { id: 10, name: 'Caramel & Strawberries', price: 'R35 - R65', images: ['/caramelstraw-1.jpg', '/caramelstraw-2.jpg'] },
+  { id: 11, name: 'Nutella & Strawberries', price: 'R35 - R65', images: ['/nutellastraw-1.jpg', '/nutellastraw-2.jpg'] },
+  { id: 12, name: 'Waffle Wednesday', price: 'R65', images: ['/milktart-1.jpg', '/milktart-2.jpg'] },
 ];
 
 export default function App() {
@@ -478,7 +480,7 @@ export default function App() {
                     {/* Placeholder Image */}
                     <div className="aspect-[4/3] w-full bg-[#1c1c1f] relative">
                       <img 
-                        src={item.image} 
+                        src={item.images[0]} 
                         alt={item.name} 
                         className="w-full h-full object-cover" 
                       />
@@ -586,7 +588,7 @@ export default function App() {
                     {/* Placeholder Image */}
                     <div className="aspect-[4/3] w-full bg-[#1c1c1f] relative">
                       <img 
-                        src={item.image} 
+                        src={item.images[0]} 
                         alt={item.name} 
                         className="w-full h-full object-cover" 
                       />
