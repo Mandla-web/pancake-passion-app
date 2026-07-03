@@ -849,6 +849,9 @@ export default function App() {
   <CreditCard className="w-5 h-5" />
   <span className="text-[15px]">Pay Securely (Yoco)</span>
 </button>
+  <CreditCard className="w-5 h-5" />
+  <span className="text-[15px]">Pay Securely (Yoco)</span>
+</button>
                   
   <CreditCard className="w-5 h-5" />
   <span className="text-[15px]">Pay Securely (Yoco)</span>
