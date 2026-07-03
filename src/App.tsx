@@ -801,47 +801,48 @@ export default function App() {
                   </button>
                   
                   <button 
-                    onClick={() => {
-                      const script = document.createElement('script');
-                      script.src = 'https://js.yoco.com/v1/yocojs.js';
-                      script.async = true;
-                      
-                      script.onload = () => {
-                        const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY;
+                  onClick={() => {
+                    // Check standard Vite, system process, or fallback to the direct string if compilation flags block it
+                    const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY || 
+                                      (typeof process !== 'undefined' ? process.env?.VITE_YOCO_PUBLIC_KEY : null) ||
+                                      'pk_live_36096f51KbYbOL2fab74'; // Absolute hardcoded fallback to ensure zero failures
 
-                        if (!publicKey) {
-                          alert("Payment Gateway Error: Public Key is missing in environment variables.");
-                          return;
+                    if (!publicKey) {
+                      alert("Payment Gateway Error: Public Key is unreadable in this environment.");
+                      return;
+                    }
+
+                    // @ts-ignore
+                    if (!window.YocoSDK) {
+                      alert("The Yoco secure script is still loading. Please wait a brief moment and try again!");
+                      return;
+                    }
+
+                    // @ts-ignore
+                    const yoco = new window.YocoSDK({
+                      publicKey: publicKey
+                    });
+
+                    yoco.showPopup({
+                      amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500,
+                      currency: 'ZAR',
+                      name: 'Pancake Passion',
+                      description: 'Pancake Passion Order Payment',
+                      callback: (result: any) => {
+                        if (result.error) {
+                          alert("Payment failed: " + result.error.message);
+                        } else {
+                          alert("Payment Successful!");
+                          setView('confirmation');
                         }
-
-                        // @ts-ignore
-                        const yoco = new window.YocoSDK({
-                          publicKey: publicKey
-                        });
-
-                        yoco.showPopup({
-                          amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500,
-                          currency: 'ZAR',
-                          name: 'Pancake Passion',
-                          description: 'Pancake Passion Order Payment',
-                          callback: (result: any) => {
-                            if (result.error) {
-                              alert("Payment failed: " + result.error.message);
-                            } else {
-                              alert("Payment Successful!");
-                              setView('confirmation');
-                            }
-                          }
-                        });
-                      };
-
-                      document.head.appendChild(script);
-                    }}
-                    className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
-                  >
-                    <CreditCard className="w-5 h-5" />
-                    <span className="text-[15px]">Pay Securely (Yoco)</span>
-                  </button>
+                      }
+                    });
+                  }}
+                  className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
+                >
+                  <CreditCard className="w-5 h-5" />
+                  <span className="text-[15px]">Pay Securely (Yoco)</span>
+                </button>
                 </div>
               </div>
 
