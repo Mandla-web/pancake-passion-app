@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapPin, Coffee, ChevronLeft, X, ShoppingBag, Plus, Minus, CheckSquare, ArrowLeft, Phone, CreditCard, Globe, Home, ConciergeBell, ArrowLeftRight, ChevronDown } from 'lucide-react';
 
 type MenuItem = { id: number; name: string; price: string; images: string[] };
@@ -125,6 +125,19 @@ export default function App() {
   const [fulfillmentMethod, setFulfillmentMethod] = useState<'cafe' | 'trailer'>('cafe');
   const [paymentMethod, setPaymentMethod] = useState<'whatsapp' | 'yoco'>('whatsapp');
   const [selectedPaymentOption, setSelectedPaymentOption] = useState<'apple' | 'google' | 'card'>('google');
+
+  // Background hook loader triggers dynamically the second the user opens the checkout view frame layout context panel
+  useEffect(() => {
+    if (view === 'checkout') {
+      if (!document.getElementById('yoco-sdk-script')) {
+        const script = document.createElement('script');
+        script.id = 'yoco-sdk-script';
+        script.src = 'https://js.yoco.com/v1/yocojs.js';
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    }
+  }, [view]);
 
   const openCustomize = (item: MenuItem) => {
     setSelectedItem(item);
@@ -669,18 +682,6 @@ export default function App() {
 
         {view === 'checkout' && (
           <div className="flex flex-col flex-1 h-full bg-[#000000] relative overflow-hidden">
-            {/* Auto-inject the Yoco script into the global document block context safely */}
-            {(() => {
-              if (typeof window !== 'undefined' && !document.getElementById('yoco-sdk-script')) {
-                const script = document.createElement('script');
-                script.id = 'yoco-sdk-script';
-                script.src = 'https://js.yoco.com/v1/yocojs.js';
-                script.async = true;
-                document.head.appendChild(script);
-              }
-              return null;
-            })()}
-
             {/* Global Header Frame */}
             <div className="flex items-center justify-between p-5 z-30 sticky top-0 bg-[#000000]/95 backdrop-blur-[15px] border-b border-[#18181b] w-full pointer-events-auto">
               <h1 className="text-[17px] font-black tracking-tighter uppercase leading-none text-flow-shine">
@@ -814,10 +815,9 @@ export default function App() {
                   
                   <button 
                   onClick={() => {
-                    // Check standard Vite, system process, or fallback to the direct string if compilation flags block it
                     const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY || 
                                       (typeof process !== 'undefined' ? process.env?.VITE_YOCO_PUBLIC_KEY : null) ||
-                                      'pk_live_36096f51KbYbOL2fab74'; // Absolute hardcoded fallback to ensure zero failures
+                                      'pk_live_36096f51KbYbOL2fab74';
 
                     if (!publicKey) {
                       alert("Payment Gateway Error: Public Key is unreadable in this environment.");
