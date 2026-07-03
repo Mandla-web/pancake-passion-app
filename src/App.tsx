@@ -812,22 +812,28 @@ export default function App() {
                     <span className="text-[15px]">Order via WhatsApp</span>
                   </button>
                   
-                 <button 
+                <button 
   onClick={() => {
-    // 1. Dynamically append the secure Yoco script to the document body
     const script = document.createElement('script');
     script.src = 'https://js.yoco.com/v1/yocojs.js';
     script.async = true;
     
     script.onload = () => {
-      // @ts-ignore - Initialize Yoco SDK engine with your Live Public Key
+      // Pulls the key safely from your Cloudflare Variables configuration
+      const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY;
+
+      if (!publicKey) {
+        alert("Payment Gateway Error: Public Key is missing in environment variables.");
+        return;
+      }
+
+      // @ts-ignore
       const yoco = new window.YocoSDK({
-        publicKey: 'pk_live_36096f51KbYbOL2fab74' 
+        publicKey: publicKey
       });
 
-      // 2. Launch the payment popup framework overlay
       yoco.showPopup({
-        amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500, // Fallback to R15 if tray is empty for testing
+        amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500,
         currency: 'ZAR',
         name: 'Pancake Passion',
         description: 'Pancake Passion Order Payment',
@@ -846,6 +852,9 @@ export default function App() {
   }}
   className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
 >
+  <CreditCard className="w-5 h-5" />
+  <span className="text-[15px]">Pay Securely (Yoco)</span>
+</button>
   <CreditCard className="w-5 h-5" />
   <span className="text-[15px]">Pay Securely (Yoco)</span>
 </button>
