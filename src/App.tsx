@@ -41,8 +41,7 @@ const cafeMenuItems: MenuItem[] = [
   { id: 9, name: 'Biscoff', price: 'R30 - R58', images: ['/biscoff-1.jpg', '/biscoff-2.jpg'] },
   { id: 10, name: 'Caramel & Strawberries', price: 'R35 - R65', images: ['/caramelstraw-1.jpg', '/caramelstraw-2.jpg'] },
   { id: 11, name: 'Nutella & Strawberries', price: 'R35 - R65', images: ['/nutellastraw-1.jpg', '/nutellastraw-2.jpg'] },
-  { id: 12, name: 'Waffle Wednesday', price: 'R65', images: ['/milktart-1.jpg', '/milktart-2.jpg'] },
-];
+  ];
 
 interface ImageCarouselProps {
   images: string[];
@@ -50,7 +49,63 @@ interface ImageCarouselProps {
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, alt }) => {
-  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handlePrev = (e: any) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNext = (e: any) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  if (!images || images.length === 0) {
+    return <div className="w-full h-full bg-[#1c1c1f]" />;
+  }
+
+  return (
+    <div className="relative w-full h-full group overflow-hidden">
+      <img
+        src={images[currentIndex]}
+        alt={alt}
+        className="w-full h-full object-cover transition-all duration-300"
+      />
+
+      {images.length > 1 && (
+        <button
+          onClick={handlePrev}
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-10"
+        >
+          &lt;
+        </button>
+      )}
+
+      {images.length > 1 && (
+        <button
+          onClick={handleNext}
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-10"
+        >
+          &gt;
+        </button>
+      )}
+
+      {images.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-sm">
+          {images.map((_, index) => (
+            <div
+              key={index}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === currentIndex ? 'bg-[#ff007f] scale-110' : 'bg-gray-500'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation(); // Stops the card click event from triggering
