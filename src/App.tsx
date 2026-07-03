@@ -669,6 +669,18 @@ export default function App() {
 
         {view === 'checkout' && (
           <div className="flex flex-col flex-1 h-full bg-[#000000] relative overflow-hidden">
+            {/* Auto-inject the Yoco script into the global document block context safely */}
+            {(() => {
+              if (typeof window !== 'undefined' && !document.getElementById('yoco-sdk-script')) {
+                const script = document.createElement('script');
+                script.id = 'yoco-sdk-script';
+                script.src = 'https://js.yoco.com/v1/yocojs.js';
+                script.async = true;
+                document.head.appendChild(script);
+              }
+              return null;
+            })()}
+
             {/* Global Header Frame */}
             <div className="flex items-center justify-between p-5 z-30 sticky top-0 bg-[#000000]/95 backdrop-blur-[15px] border-b border-[#18181b] w-full pointer-events-auto">
               <h1 className="text-[17px] font-black tracking-tighter uppercase leading-none text-flow-shine">
