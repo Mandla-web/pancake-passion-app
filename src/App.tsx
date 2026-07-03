@@ -811,10 +811,50 @@ export default function App() {
                     <Phone className="w-5 h-5" />
                     <span className="text-[15px]">Order via WhatsApp</span>
                   </button>
-                  <button className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all">
-                    <CreditCard className="w-5 h-5" />
-                    <span className="text-[15px]">Pay Securely (Yoco)</span>
-                  </button>
+                 <button 
+  onClick={() => {
+    // 1. Ensure the user filled out their required information first
+    if (!firstName || !phone) {
+      alert("Please fill in your First Name and WhatsApp Number before paying.");
+      return;
+    }
+
+    // 2. Load the official Yoco Web SDK script dynamically
+    const script = document.createElement('script');
+    script.src = 'https://js.yoco.com/v1/yocojs.js';
+    script.async = true;
+    
+    script.onload = () => {
+      // @ts-ignore - Initialize Yoco SDK engine with your Live Public Key
+      const yoco = new window.YocoSDK({
+        publicKey: 'pk_live_36096f51KbYbOL2fab74' 
+      });
+
+      // 3. Open the secure checkout payment popup window
+      yoco.showPopup({
+        amountInCents: trayTotal * 100, // Convert Rands to Cents (e.g., R15 becomes 1500 cents)
+        currency: 'ZAR',
+        name: 'Pancake Passion',
+        description: `Order for ${firstName} (${fulfillmentMethod === 'cafe' ? 'Vincent Cafe' : 'Mobile Trailer'})`,
+        callback: (result: any) => {
+          if (result.error) {
+            alert("Payment failed: " + result.error.message);
+          } else {
+            // 4. Success! Clear the tray database state and go to confirmation frame
+            alert("Payment Successful! Dispatching order details.");
+            setView('confirmation');
+          }
+        }
+      });
+    };
+
+    document.head.appendChild(script);
+  }}
+  className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
+>
+  <CreditCard className="w-5 h-5" />
+  <span className="text-[15px]">Pay Securely (Yoco)</span>
+</button>
                 </div>
               </div>
 
