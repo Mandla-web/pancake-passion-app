@@ -811,15 +811,10 @@ export default function App() {
                     <Phone className="w-5 h-5" />
                     <span className="text-[15px]">Order via WhatsApp</span>
                   </button>
+                  
                  <button 
   onClick={() => {
-    // 1. Ensure the user filled out their required information first
-    if (!firstName || !phone) {
-      alert("Please fill in your First Name and WhatsApp Number before paying.");
-      return;
-    }
-
-    // 2. Load the official Yoco Web SDK script dynamically
+    // 1. Dynamically append the secure Yoco script to the document body
     const script = document.createElement('script');
     script.src = 'https://js.yoco.com/v1/yocojs.js';
     script.async = true;
@@ -830,18 +825,17 @@ export default function App() {
         publicKey: 'pk_live_36096f51KbYbOL2fab74' 
       });
 
-      // 3. Open the secure checkout payment popup window
+      // 2. Launch the payment popup framework overlay
       yoco.showPopup({
-        amountInCents: trayTotal * 100, // Convert Rands to Cents (e.g., R15 becomes 1500 cents)
+        amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500, // Fallback to R15 if tray is empty for testing
         currency: 'ZAR',
         name: 'Pancake Passion',
-        description: `Order for ${firstName} (${fulfillmentMethod === 'cafe' ? 'Vincent Cafe' : 'Mobile Trailer'})`,
+        description: 'Pancake Passion Order Payment',
         callback: (result: any) => {
           if (result.error) {
             alert("Payment failed: " + result.error.message);
           } else {
-            // 4. Success! Clear the tray database state and go to confirmation frame
-            alert("Payment Successful! Dispatching order details.");
+            alert("Payment Successful!");
             setView('confirmation');
           }
         }
@@ -852,6 +846,10 @@ export default function App() {
   }}
   className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
 >
+  <CreditCard className="w-5 h-5" />
+  <span className="text-[15px]">Pay Securely (Yoco)</span>
+</button>
+                  
   <CreditCard className="w-5 h-5" />
   <span className="text-[15px]">Pay Securely (Yoco)</span>
 </button>
