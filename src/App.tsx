@@ -4,9 +4,9 @@
  */
 
 import { useState } from 'react';
-import { MapPin, Coffee, ChevronLeft, X, ShoppingBag, Plus, Minus, Square, CheckSquare, ArrowLeft, Phone, CreditCard, Menu, MessageCircle, ChevronDown, Globe, Home, ConciergeBell, ArrowLeftRight } from 'lucide-react';
+import { MapPin, Coffee, ChevronLeft, X, ShoppingBag, Plus, Minus, CheckSquare, ArrowLeft, Phone, CreditCard, Globe, Home, ConciergeBell, ArrowLeftRight, ChevronDown } from 'lucide-react';
 
-type MenuItem = { id: number; name: string; price: string; image: string };
+type MenuItem = { id: number; name: string; price: string; images: string[] };
 
 type TrayItem = {
   id: string;
@@ -17,7 +17,7 @@ type TrayItem = {
   totalPrice: number;
 };
 
-// 2. Update your menuItems list
+// Menu items list
 const menuItems: MenuItem[] = [
   { id: 1, name: 'Cinnamon & Sugar', price: 'R10', images: ['/cinnamon-1.jpg', '/cinnamon-2.jpg'] },
   { id: 2, name: 'Banana', price: 'R15', images: ['/banana-1.jpg', '/banana-2.jpg'] },
@@ -28,7 +28,7 @@ const menuItems: MenuItem[] = [
   { id: 7, name: 'Nutella & Banana', price: 'R25', images: ['/nutellabanana-1.jpg', '/nutellabanana-2.jpg'] },
 ];
 
-// 3. Update your cafeMenuItems list
+// Cafe menu items list
 const cafeMenuItems: MenuItem[] = [
   { id: 1, name: 'Cinnamon & Sugar', price: 'R15 - R25', images: ['/cinnamon-1.jpg', '/cinnamon-2.jpg'] },
   { id: 2, name: 'Banana', price: 'R15 - R28', images: ['/banana-1.jpg', '/banana-2.jpg'] },
@@ -41,7 +41,7 @@ const cafeMenuItems: MenuItem[] = [
   { id: 9, name: 'Biscoff', price: 'R30 - R58', images: ['/biscoff-1.jpg', '/biscoff-2.jpg'] },
   { id: 10, name: 'Caramel & Strawberries', price: 'R35 - R65', images: ['/caramelstraw-1.jpg', '/caramelstraw-2.jpg'] },
   { id: 11, name: 'Nutella & Strawberries', price: 'R35 - R65', images: ['/nutellastraw-1.jpg', '/nutellastraw-2.jpg'] },
-  ];
+];
 
 interface ImageCarouselProps {
   images: string[];
@@ -106,8 +106,6 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, alt }) => {
     </div>
   );
 };
-
-  
 
 export default function App() {
   const [view, setView] = useState<'main' | 'landing' | 'trailer-menu' | 'cafe-menu' | 'checkout' | 'confirmation'>('landing');
@@ -176,7 +174,6 @@ export default function App() {
             if (selectedPath) {
               setView(selectedPath === 'trailer' ? 'trailer-menu' : 'cafe-menu');
             } else {
-              // Fallback just in case
               setView('main');
             }
           }}
@@ -316,8 +313,7 @@ export default function App() {
                       setShowEmptyTrayBanner(true);
                       setView(selectedPath === 'trailer' ? 'trailer-menu' : 'cafe-menu');
                     } else {
-                      // Order via WhatsApp logic
-                      setView('checkout'); // Or wherever this should go, prototype
+                      setView('checkout');
                     }
                   }}
                   className="w-full bg-[#25D366] rounded-2xl py-4 font-bold text-white text-[16px] tracking-wide hover:bg-[#25D366]/90 active:scale-[0.98] transition-all flex items-center justify-center shadow-[0_0_15px_rgba(37,211,102,0.2)]"
@@ -394,7 +390,6 @@ export default function App() {
             <div className="p-6 flex flex-col items-center flex-1 overflow-y-auto pb-28 z-10">
               {/* Header Section */}
               <header className="mt-8 mb-8 flex flex-col items-center w-full text-center">
-                {/* Logo Placeholder - using img with fallback to styled text */}
                 <div className="mb-4 flex justify-center items-center w-full h-12">
                   <img 
                     src="/logo.png" 
@@ -405,7 +400,6 @@ export default function App() {
                       e.currentTarget.nextElementSibling?.classList.remove('hidden');
                     }}
                   />
-                  {/* Fallback stylized text if image fails to load */}
                   <h1 className="hidden text-3xl md:text-4xl font-black text-brand-pink tracking-tighter uppercase">
                     Pancake Passion
                   </h1>
@@ -486,45 +480,45 @@ export default function App() {
               
               {/* Top Navigation */}
               <div className="flex items-center justify-between p-4">
-              <button 
-                onClick={() => setView('main')} 
-                className="flex items-center gap-1 p-2 -ml-2 text-white hover:bg-[#18181b] rounded-full transition-colors active:scale-95"
-              >
-                <ChevronLeft className="w-5 h-5" />
-                <span className="text-[14px] font-bold">Back</span>
-              </button>
-              
-              <div className="h-7 absolute left-1/2 -translate-x-1/2">
-                <img 
-                  src="/logo.png" 
-                  alt="Pancake Passion Logo" 
-                  className="h-full object-contain" 
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  }} 
-                />
-                <h1 className="hidden text-[17px] font-black text-brand-pink tracking-tighter uppercase">
-                  Pancake Passion
-                </h1>
-              </div>
+                <button 
+                  onClick={() => setView('main')} 
+                  className="flex items-center gap-1 p-2 -ml-2 text-white hover:bg-[#18181b] rounded-full transition-colors active:scale-95"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                  <span className="text-[14px] font-bold">Back</span>
+                </button>
+                
+                <div className="h-7 absolute left-1/2 -translate-x-1/2">
+                  <img 
+                    src="/logo.png" 
+                    alt="Pancake Passion Logo" 
+                    className="h-full object-contain" 
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }} 
+                  />
+                  <h1 className="hidden text-[17px] font-black text-brand-pink tracking-tighter uppercase">
+                    Pancake Passion
+                  </h1>
+                </div>
 
-              <button 
-                onClick={() => {
-                  if (trayCount === 0) {
-                    setShowEmptyTrayBanner(true);
-                  } else {
-                    setView('checkout');
-                  }
-                }}
-                className="relative p-2 active:scale-95 transition-transform"
-              >
-                <ShoppingBag className="w-6 h-6 text-white" />
-                <span className="absolute top-0 right-0 bg-brand-pink text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#000000]">
-                  {trayCount}
-                </span>
-              </button>
-            </div>
+                <button 
+                  onClick={() => {
+                    if (trayCount === 0) {
+                      setShowEmptyTrayBanner(true);
+                    } else {
+                      setView('checkout');
+                    }
+                  }}
+                  className="relative p-2 active:scale-95 transition-transform"
+                >
+                  <ShoppingBag className="w-6 h-6 text-white" />
+                  <span className="absolute top-0 right-0 bg-brand-pink text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#000000]">
+                    {trayCount}
+                  </span>
+                </button>
+              </div>
             </div>
 
             {/* Menu List */}
@@ -542,12 +536,10 @@ export default function App() {
                     key={item.id} 
                     className="bg-[#121214] border border-[#27272a] rounded-[20px] overflow-hidden flex flex-col"
                   >
-                    {/* Placeholder Image */}
                     <div className="aspect-[4/3] w-full bg-[#1c1c1f] relative">
                       <ImageCarousel images={item.images} alt={item.name} />
                     </div>
                     
-                    {/* Card Content */}
                     <div className="p-5 flex flex-col gap-5">
                       <div className="flex flex-col gap-1">
                         <h3 className="text-[20px] font-black text-white leading-tight tracking-tight">
@@ -558,7 +550,6 @@ export default function App() {
                         </p>
                       </div>
                       
-                      {/* Action Button */}
                       <button 
                         onClick={() => openCustomize(item)}
                         className="w-full py-3.5 rounded-xl bg-[#1c1c1f] border border-[#27272a] text-white text-[15px] font-bold flex items-center justify-center hover:bg-[#27272a] active:bg-[#121214] active:scale-[0.98] transition-all"
@@ -590,45 +581,45 @@ export default function App() {
               
               {/* Top Navigation */}
               <div className="flex items-center justify-between p-4">
-              <button 
-                onClick={() => setView('main')} 
-                className="flex items-center gap-1 p-2 -ml-2 text-white hover:bg-[#18181b] rounded-full transition-colors active:scale-95"
-              >
-                <ChevronLeft className="w-5 h-5" />
-                <span className="text-[14px] font-bold">Back</span>
-              </button>
-              
-              <div className="h-7 absolute left-1/2 -translate-x-1/2">
-                <img 
-                  src="/logo.png" 
-                  alt="Pancake Passion Logo" 
-                  className="h-full object-contain" 
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  }} 
-                />
-                <h1 className="hidden text-[17px] font-black text-brand-pink tracking-tighter uppercase leading-none">
-                  Pancake Passion
-                </h1>
-              </div>
+                <button 
+                  onClick={() => setView('main')} 
+                  className="flex items-center gap-1 p-2 -ml-2 text-white hover:bg-[#18181b] rounded-full transition-colors active:scale-95"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                  <span className="text-[14px] font-bold">Back</span>
+                </button>
+                
+                <div className="h-7 absolute left-1/2 -translate-x-1/2">
+                  <img 
+                    src="/logo.png" 
+                    alt="Pancake Passion Logo" 
+                    className="h-full object-contain" 
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }} 
+                  />
+                  <h1 className="hidden text-[17px] font-black text-brand-pink tracking-tighter uppercase leading-none">
+                    Pancake Passion
+                  </h1>
+                </div>
 
-              <button 
-                onClick={() => {
-                  if (trayCount === 0) {
-                    setShowEmptyTrayBanner(true);
-                  } else {
-                    setView('checkout');
-                  }
-                }}
-                className="relative p-2 active:scale-95 transition-transform"
-              >
-                <ShoppingBag className="w-6 h-6 text-white" />
-                <span className="absolute top-0 right-0 bg-brand-pink text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#000000]">
-                  {trayCount}
-                </span>
-              </button>
-            </div>
+                <button 
+                  onClick={() => {
+                    if (trayCount === 0) {
+                      setShowEmptyTrayBanner(true);
+                    } else {
+                      setView('checkout');
+                    }
+                  }}
+                  className="relative p-2 active:scale-95 transition-transform"
+                >
+                  <ShoppingBag className="w-6 h-6 text-white" />
+                  <span className="absolute top-0 right-0 bg-brand-pink text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#000000]">
+                    {trayCount}
+                  </span>
+                </button>
+              </div>
             </div>
 
             {/* Menu List */}
@@ -646,12 +637,10 @@ export default function App() {
                     key={item.id} 
                     className="bg-[#121214] border border-[#27272a] rounded-[20px] overflow-hidden flex flex-col"
                   >
-                    {/* Placeholder Image */}
                     <div className="aspect-[4/3] w-full bg-[#1c1c1f] relative">
                       <ImageCarousel images={item.images} alt={item.name} />
                     </div>
                     
-                    {/* Card Content */}
                     <div className="p-5 flex flex-col gap-5">
                       <div className="flex flex-col gap-1">
                         <h3 className="text-[20px] font-black text-white leading-tight tracking-tight">
@@ -662,7 +651,6 @@ export default function App() {
                         </p>
                       </div>
                       
-                      {/* Action Button */}
                       <button 
                         onClick={() => openCustomize(item)}
                         className="w-full py-3.5 rounded-xl bg-transparent border-2 border-[#27272a] text-white text-[15px] font-bold flex items-center justify-center hover:bg-[#1c1c1f] hover:border-[#3f3f46] active:bg-[#121214] active:scale-[0.98] transition-all"
@@ -812,59 +800,48 @@ export default function App() {
                     <span className="text-[15px]">Order via WhatsApp</span>
                   </button>
                   
-                <button 
-  onClick={() => {
-    const script = document.createElement('script');
-    script.src = 'https://js.yoco.com/v1/yocojs.js';
-    script.async = true;
-    
-    script.onload = () => {
-      // Pulls the key safely from your Cloudflare Variables configuration
-      const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY;
+                  <button 
+                    onClick={() => {
+                      const script = document.createElement('script');
+                      script.src = 'https://js.yoco.com/v1/yocojs.js';
+                      script.async = true;
+                      
+                      script.onload = () => {
+                        const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY;
 
-      if (!publicKey) {
-        alert("Payment Gateway Error: Public Key is missing in environment variables.");
-        return;
-      }
+                        if (!publicKey) {
+                          alert("Payment Gateway Error: Public Key is missing in environment variables.");
+                          return;
+                        }
 
-      // @ts-ignore
-      const yoco = new window.YocoSDK({
-        publicKey: publicKey
-      });
+                        // @ts-ignore
+                        const yoco = new window.YocoSDK({
+                          publicKey: publicKey
+                        });
 
-      yoco.showPopup({
-        amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500,
-        currency: 'ZAR',
-        name: 'Pancake Passion',
-        description: 'Pancake Passion Order Payment',
-        callback: (result: any) => {
-          if (result.error) {
-            alert("Payment failed: " + result.error.message);
-          } else {
-            alert("Payment Successful!");
-            setView('confirmation');
-          }
-        }
-      });
-    };
+                        yoco.showPopup({
+                          amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500,
+                          currency: 'ZAR',
+                          name: 'Pancake Passion',
+                          description: 'Pancake Passion Order Payment',
+                          callback: (result: any) => {
+                            if (result.error) {
+                              alert("Payment failed: " + result.error.message);
+                            } else {
+                              alert("Payment Successful!");
+                              setView('confirmation');
+                            }
+                          }
+                        });
+                      };
 
-    document.head.appendChild(script);
-  }}
-  className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
->
-  <CreditCard className="w-5 h-5" />
-  <span className="text-[15px]">Pay Securely (Yoco)</span>
-</button>
-  <CreditCard className="w-5 h-5" />
-  <span className="text-[15px]">Pay Securely (Yoco)</span>
-</button>
-  <CreditCard className="w-5 h-5" />
-  <span className="text-[15px]">Pay Securely (Yoco)</span>
-</button>
-                  
-  <CreditCard className="w-5 h-5" />
-  <span className="text-[15px]">Pay Securely (Yoco)</span>
-</button>
+                      document.head.appendChild(script);
+                    }}
+                    className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    <span className="text-[15px]">Pay Securely (Yoco)</span>
+                  </button>
                 </div>
               </div>
 
