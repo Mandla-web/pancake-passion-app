@@ -132,7 +132,7 @@ export default function App() {
       if (!document.getElementById('yoco-sdk-script')) {
         const script = document.createElement('script');
         script.id = 'yoco-sdk-script';
-        script.src = 'https://js.yoco.com/v1/yocojs.js';
+        script.src = 'https://js.yoco.com/sdk/v1/yoco-sdk-web.js'; // <-- CORRECTED OFFICIAL URL
         script.async = true;
         document.head.appendChild(script);
       }
@@ -813,7 +813,7 @@ export default function App() {
                     <span className="text-[15px]">Order via WhatsApp</span>
                   </button>
                   
-                <button 
+                  <button 
                   onClick={() => {
                     const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY || 
                                       (typeof process !== 'undefined' ? process.env?.VITE_YOCO_PUBLIC_KEY : null) ||
@@ -852,9 +852,9 @@ export default function App() {
                     if (window.YocoSDK) {
                       launchYoco();
                     } else {
-                      // 2. If not loaded yet, fetch it right now and launch the second it arrives
+                      // 2. If not loaded yet, fetch it from the CORRECT URL right now and launch
                       const script = document.createElement('script');
-                      script.src = 'https://js.yoco.com/v1/yocojs.js';
+                      script.src = 'https://js.yoco.com/sdk/v1/yoco-sdk-web.js'; // <-- THIS IS THE OFFICIAL URL
                       script.onload = () => {
                         launchYoco();
                       };
