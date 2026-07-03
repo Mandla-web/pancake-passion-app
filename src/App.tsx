@@ -813,7 +813,7 @@ export default function App() {
                     <span className="text-[15px]">Order via WhatsApp</span>
                   </button>
                   
-                  <button 
+                <button 
                   onClick={() => {
                     const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY || 
                                       (typeof process !== 'undefined' ? process.env?.VITE_YOCO_PUBLIC_KEY : null) ||
@@ -824,31 +824,45 @@ export default function App() {
                       return;
                     }
 
-                    // @ts-ignore
-                    if (!window.YocoSDK) {
-                      alert("The Yoco secure script is still loading. Please wait a brief moment and try again!");
-                      return;
-                    }
+                    // Helper function to initialize and launch the checkout modal
+                    const launchYoco = () => {
+                      // @ts-ignore
+                      const yoco = new window.YocoSDK({
+                        publicKey: publicKey
+                      });
 
-                    // @ts-ignore
-                    const yoco = new window.YocoSDK({
-                      publicKey: publicKey
-                    });
-
-                    yoco.showPopup({
-                      amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500,
-                      currency: 'ZAR',
-                      name: 'Pancake Passion',
-                      description: 'Pancake Passion Order Payment',
-                      callback: (result: any) => {
-                        if (result.error) {
-                          alert("Payment failed: " + result.error.message);
-                        } else {
-                          alert("Payment Successful!");
-                          setView('confirmation');
+                      yoco.showPopup({
+                        amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500,
+                        currency: 'ZAR',
+                        name: 'Pancake Passion',
+                        description: 'Pancake Passion Order Payment',
+                        callback: (result: any) => {
+                          if (result.error) {
+                            alert("Payment failed: " + result.error.message);
+                          } else {
+                            alert("Payment Successful!");
+                            setView('confirmation');
+                          }
                         }
-                      }
-                    });
+                      });
+                    };
+
+                    // 1. If Yoco is already loaded, launch immediately!
+                    // @ts-ignore
+                    if (window.YocoSDK) {
+                      launchYoco();
+                    } else {
+                      // 2. If not loaded yet, fetch it right now and launch the second it arrives
+                      const script = document.createElement('script');
+                      script.src = 'https://js.yoco.com/v1/yocojs.js';
+                      script.onload = () => {
+                        launchYoco();
+                      };
+                      script.onerror = () => {
+                        alert("Failed to connect to Yoco's servers. Please check your internet connection or disable any strict ad-blockers/firewalls.");
+                      };
+                      document.head.appendChild(script);
+                    }
                   }}
                   className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
                 >
