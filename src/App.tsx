@@ -107,65 +107,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, alt }) => {
   );
 };
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Stops the card click event from triggering
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Stops the card click event from triggering
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  if (!images || images.length === 0) {
-    return <div className="w-full h-full bg-[#1c1c1f]" />;
-  }
-
-  return (
-    <div className="relative w-full h-full group overflow-hidden">
-      {/* The Image */}
-      <img
-        src={images[currentIndex]}
-        alt={alt}
-        className="w-full h-full object-cover transition-all duration-300"
-      />
-
-      {/* Left Arrow (Only shows if there's more than 1 image) */}
-      {images.length > 1 && (
-        <button
-          onClick={handlePrev}
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-10"
-        >
-          &lt;
-        </button>
-      )}
-
-      {/* Right Arrow (Only shows if there's more than 1 image) */}
-      {images.length > 1 && (
-        <button
-          onClick={handleNext}
-          className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-10"
-        >
-          &gt;
-        </button>
-      )}
-
-      {/* Status Pills / Indicators */}
-      {images.length > 1 && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-sm">
-          {images.map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'bg-[#ff007f] scale-110' : 'bg-gray-500'
-              }`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+  
 
 export default function App() {
   const [view, setView] = useState<'main' | 'landing' | 'trailer-menu' | 'cafe-menu' | 'checkout' | 'confirmation'>('landing');
