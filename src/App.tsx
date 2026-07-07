@@ -132,7 +132,7 @@ export default function App() {
       if (!document.getElementById('yoco-sdk-script')) {
         const script = document.createElement('script');
         script.id = 'yoco-sdk-script';
-        script.src = 'https://js.yoco.com/v1/yocojs.js';
+        script.src = 'https://js.yoco.com/sdk/v1/yoco-sdk-web.js';
         script.async = true;
         document.head.appendChild(script);
       }
@@ -808,16 +808,16 @@ export default function App() {
                 <div className="flex gap-3 mt-1">
                   <button 
                     onClick={() => setFulfillmentMethod('cafe')}
-                    className={"flex-1 rounded-xl p-3 flex flex-col items-center justify-center text-center gap-1 border-2 transition-colors " + (fulfillmentMethod === 'cafe' ? 'border-brand-pink bg-[#1a1015]' : 'border-[#27272a] bg-[#1c1c1f]')}
+                    className={`flex-1 rounded-xl p-3 flex flex-col items-center justify-center text-center gap-1 border-2 transition-colors ${fulfillmentMethod === 'cafe' ? 'border-brand-pink bg-[#1a1015]' : 'border-[#27272a] bg-[#1c1c1f]'}`}
                   >
-                    <span className={"text-[13px] font-bold " + (fulfillmentMethod === 'cafe' ? 'text-white' : 'text-[#a1a1aa]')}>Vincent Cafe</span>
+                    <span className={`text-[13px] font-bold ${fulfillmentMethod === 'cafe' ? 'text-white' : 'text-[#a1a1aa]'}`}>Vincent Cafe</span>
                     <span className="text-[10px] text-[#71717a]">(4 Donald Road)</span>
                   </button>
                   <button 
                     onClick={() => setFulfillmentMethod('trailer')}
-                    className={"flex-1 rounded-xl p-3 flex flex-col items-center justify-center text-center gap-1 border-2 transition-colors " + (fulfillmentMethod === 'trailer' ? 'border-brand-pink bg-[#1a1015]' : 'border-[#27272a] bg-[#1c1c1f]')}
+                    className={`flex-1 rounded-xl p-3 flex flex-col items-center justify-center text-center gap-1 border-2 transition-colors ${fulfillmentMethod === 'trailer' ? 'border-brand-pink bg-[#1a1015]' : 'border-[#27272a] bg-[#1c1c1f]'}`}
                   >
-                    <span className={"text-[13px] font-bold " + (fulfillmentMethod === 'trailer' ? 'text-white' : 'text-[#a1a1aa]')}>Mobile Trailer</span>
+                    <span className={`text-[13px] font-bold ${fulfillmentMethod === 'trailer' ? 'text-white' : 'text-[#a1a1aa]'}`}>Mobile Trailer</span>
                     <span className="text-[10px] text-[#71717a]">(Direct collection)</span>
                   </button>
                 </div>
@@ -872,7 +872,7 @@ export default function App() {
                       } else {
                         // 2. If not loaded yet, fetch it right now and launch
                         const script = document.createElement('script');
-                        script.src = 'https://js.yoco.com/v1/yocojs.js'; 
+                        script.src = 'https://js.yoco.com/sdk/v1/yoco-sdk-web.js'; 
                         script.onload = () => {
                           launchYoco();
                         };
