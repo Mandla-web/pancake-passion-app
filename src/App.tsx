@@ -808,6 +808,404 @@ export default function App() {
                 <div className="flex gap-3 mt-1">
                   <button 
                     onClick={() => setFulfillmentMethod('cafe')}
-                    className={`flex-1 rounded-xl p-3 flex flex-col items-center justify-center text-center gap-1 border-2 transition-colors ${fulfillmentMethod === 'cafe' ? 'border-brand-pink bg-[#1a1015]' : 'border-[#27272a] bg-[#1c1c1f]'}`}
+                    className={"flex-1 rounded-xl p-3 flex flex-col items-center justify-center text-center gap-1 border-2 transition-colors " + (fulfillmentMethod === 'cafe' ? 'border-brand-pink bg-[#1a1015]' : 'border-[#27272a] bg-[#1c1c1f]')}
                   >
-                    <span className={`text-[13px] font-bold
+                    <span className={"text-[13px] font-bold " + (fulfillmentMethod === 'cafe' ? 'text-white' : 'text-[#a1a1aa]')}>Vincent Cafe</span>
+                    <span className="text-[10px] text-[#71717a]">(4 Donald Road)</span>
+                  </button>
+                  <button 
+                    onClick={() => setFulfillmentMethod('trailer')}
+                    className={"flex-1 rounded-xl p-3 flex flex-col items-center justify-center text-center gap-1 border-2 transition-colors " + (fulfillmentMethod === 'trailer' ? 'border-brand-pink bg-[#1a1015]' : 'border-[#27272a] bg-[#1c1c1f]')}
+                  >
+                    <span className={"text-[13px] font-bold " + (fulfillmentMethod === 'trailer' ? 'text-white' : 'text-[#a1a1aa]')}>Mobile Trailer</span>
+                    <span className="text-[10px] text-[#71717a]">(Direct collection)</span>
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-3 mt-2">
+                  <button className="w-full bg-[#25D366] text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-[#25D366]/90 active:scale-[0.98] transition-all">
+                    <Phone className="w-5 h-5" />
+                    <span className="text-[15px]">Order via WhatsApp</span>
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      const publicKey = import.meta.env.VITE_YOCO_PUBLIC_KEY || 
+                                        (typeof process !== 'undefined' ? process.env?.VITE_YOCO_PUBLIC_KEY : null) ||
+                                        'pk_live_36096f51KbYbOL2fab74';
+
+                      if (!publicKey) {
+                        alert("Payment Gateway Error: Public Key is unreadable in this environment.");
+                        return;
+                      }
+
+                      // Helper function to initialize and launch the checkout modal
+                      const launchYoco = () => {
+                        // @ts-ignore
+                        const yoco = new window.YocoSDK({
+                          publicKey: publicKey
+                        });
+
+                        yoco.showPopup({
+                          amountInCents: trayTotal > 0 ? trayTotal * 100 : 1500,
+                          currency: 'ZAR',
+                          name: 'Pancake Passion',
+                          description: 'Pancake Passion Order Payment',
+                          callback: (result: any) => {
+                            if (result.error) {
+                              // If they just close it without paying, don't show an annoying alert
+                              if (result.error.message !== "closed") {
+                                alert("Payment failed: " + result.error.message);
+                              }
+                            } else {
+                              alert("Payment Successful!");
+                              setView('confirmation');
+                            }
+                          }
+                        });
+                      };
+
+                      // 1. If Yoco is already loaded, launch immediately!
+                      // @ts-ignore
+                      if (window.YocoSDK) {
+                        launchYoco();
+                      } else {
+                        // 2. If not loaded yet, fetch it right now and launch
+                        const script = document.createElement('script');
+                        script.src = 'https://js.yoco.com/v1/yocojs.js'; 
+                        script.onload = () => {
+                          launchYoco();
+                        };
+                        script.onerror = () => {
+                          alert("Failed to connect to Yoco's servers. Please check your internet connection.");
+                        };
+                        document.head.appendChild(script);
+                      }
+                    }}
+                    className="w-full bg-brand-pink text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    <span className="text-[15px]">Pay Securely (Yoco)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Mobile-Optimized Three-Part Footer Component */}
+              <div className="mt-4 border border-[#27272a] rounded-[24px] p-6 flex flex-col gap-8 bg-[#0a0a0a]">
+                
+                {/* Block 1 (Brand Profile) */}
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-white font-black text-[18px] tracking-tight uppercase">Pancake Passion</h3>
+                  <p className="text-[#a1a1aa] text-[13px] leading-relaxed">
+                    Born from an uncompromising love for authentic, buttery South African pancakes. We serve the Eastern Cape with premium creations straight from our Vincent café counter and our mobile trailer.
+                  </p>
+                </div>
+
+                {/* Block 2 (Location Info) */}
+                <div className="flex flex-col gap-3">
+                  <h4 className="text-white font-bold text-[12px] uppercase tracking-wider">Visit the Cafe</h4>
+                  <p className="text-[#a1a1aa] text-[13px] leading-relaxed mb-1">
+                    The Batter &amp; Bean Cafe<br/>4 Donald Road, Vincent, East London
+                  </p>
+                  <button className="w-full border border-[#27272a] text-white rounded-full py-3 text-[12px] font-bold flex items-center justify-center gap-2 hover:bg-[#18181b] active:scale-[0.98]">
+                    <MapPin className="w-4 h-4 text-brand-pink" />
+                    OPEN IN GOOGLE MAPS
+                  </button>
+                </div>
+
+                {/* Block 3 (Contact Hub) */}
+                <div className="flex flex-col gap-3">
+                  <h4 className="text-white font-bold text-[12px] uppercase tracking-wider">Connect with Renee</h4>
+                  <a href="tel:+27833224285" className="w-full border border-[#27272a] text-white rounded-full py-3 text-[12px] font-bold flex items-center justify-center gap-2 hover:bg-[#18181b] active:scale-[0.98]">
+                    <Phone className="w-4 h-4 text-brand-pink" />
+                    +27 83 322 4285
+                  </a>
+                  <button className="w-full border border-[#27272a] text-white rounded-full py-3 text-[12px] font-bold flex items-center justify-center gap-2 hover:bg-[#18181b] active:scale-[0.98]">
+                    <Globe className="w-4 h-4 text-brand-pink" />
+                    FOLLOW ON FACEBOOK
+                  </button>
+                </div>
+
+              </div>
+              
+              {/* Layout Buffer */}
+              <div className="h-28 shrink-0 opacity-0 pointer-events-none"></div>
+
+            </div>
+          </div>
+        )}
+        
+        {view === 'confirmation' && (
+          <div className="flex flex-col flex-1 h-full bg-[#050505]">
+            {/* Top Navigation */}
+            <div className="flex items-center p-4 border-b border-[#18181b] sticky top-0 bg-[#050505]/95 backdrop-blur-sm z-10">
+              <button 
+                onClick={() => setView('checkout')} 
+                className="p-2 -ml-2 text-white hover:bg-[#18181b] rounded-full transition-colors active:scale-95"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+              <div className="flex-1 flex justify-center items-center h-7 pr-8 gap-2">
+                <h1 className="text-[17px] font-black text-white tracking-tighter">
+                  Checkout
+                </h1>
+              </div>
+            </div>
+
+            <div className="p-5 overflow-y-auto pb-24 flex flex-col gap-6">
+              
+              {/* Fulfillment Confirmation Section */}
+              <div className="bg-[#121214] border border-[#27272a] rounded-[20px] p-5">
+                <h2 className="text-[#a1a1aa] text-[11px] font-bold tracking-wider mb-4">FULFILLMENT DETAILS</h2>
+                
+                <div className="flex items-start gap-3 mb-4">
+                   {fulfillmentMethod === 'cafe' ? (
+                     <>
+                       <MapPin className="w-5 h-5 text-brand-pink shrink-0 mt-0.5" strokeWidth={2.5} />
+                       <div className="flex flex-col">
+                         <span className="font-bold text-white text-[15px]">Vincent Cafe</span>
+                         <span className="text-[#a1a1aa] text-[13px]">4 Donald Road</span>
+                       </div>
+                     </>
+                   ) : (
+                     <>
+                       <Coffee className="w-5 h-5 text-[#71717a] shrink-0 mt-0.5" strokeWidth={2.5} />
+                       <div className="flex flex-col">
+                         <span className="font-bold text-white text-[15px]">Mobile Trailer</span>
+                         <span className="text-[#a1a1aa] text-[13px]">Direct trailer collection</span>
+                       </div>
+                     </>
+                   )}
+                </div>
+
+                <div className="bg-[#050505] rounded-xl p-3 border border-[#27272a]">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-white font-bold text-[14px]">{firstName || 'Linamandla'} {lastName || 'S.'}</span>
+                    <span className="text-[#a1a1aa] text-[13px]">{phone || '083 222 3334'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Summary Section */}
+              <div className="bg-[#121214] border border-[#27272a] rounded-[20px] p-5">
+                <h2 className="text-[#a1a1aa] text-[11px] font-bold tracking-wider mb-4">ORDER SUMMARY</h2>
+                
+                <div className="flex justify-between items-start mb-4 pb-4 border-b border-[#27272a]">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-white font-bold text-[14px]">1x Cinnamon &amp; Sugar</span>
+                    <span className="text-[#71717a] text-[12px]">Size: Single (1x)</span>
+                  </div>
+                  <span className="text-white font-bold text-[14px]">R15</span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-white font-bold text-[16px]">Total Due</span>
+                  <span className="text-brand-pink font-black text-[20px]">R15</span>
+                </div>
+              </div>
+
+              {/* Payment Section */}
+              {paymentMethod === 'yoco' ? (
+                <div className="bg-[#121214] rounded-[20px] p-6 flex flex-col border border-[#27272a]">
+                  <div className="text-center mb-6">
+                    <p className="text-[#a1a1aa] text-[13px] mb-1">Amount</p>
+                    <p className="text-white text-[32px] font-black tracking-tight">R15.00</p>
+                    <p className="text-[#71717a] text-[12px] mt-1">ZAR</p>
+                  </div>
+
+                  <p className="text-white font-bold text-[14px] mb-4">Payment methods</p>
+                  
+                  <div className="flex flex-col gap-0 border border-[#27272a] rounded-xl overflow-hidden bg-[#050505]">
+                    <button 
+                      onClick={() => setSelectedPaymentOption('apple')}
+                      className={`flex items-center justify-between p-4 border-b border-[#27272a] hover:bg-[#121214] transition-colors text-left ${selectedPaymentOption === 'apple' ? 'bg-[#121214]' : ''}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-full ${selectedPaymentOption === 'apple' ? 'border-[5px] border-[#050505] bg-white ring-2 ring-brand-pink' : 'border border-[#3f3f46]'}`}></div>
+                        <span className={`text-[15px] ${selectedPaymentOption === 'apple' ? 'text-white font-bold' : 'text-[#a1a1aa]'}`}>Apple Pay</span>
+                      </div>
+                      <div className="bg-white px-2 py-0.5 rounded text-black font-bold text-[11px]">Pay</div>
+                    </button>
+
+                    <button 
+                      onClick={() => setSelectedPaymentOption('google')}
+                      className={`flex items-center justify-between p-4 border-b border-[#27272a] hover:bg-[#121214] transition-colors text-left ${selectedPaymentOption === 'google' ? 'bg-[#121214]' : ''}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-full ${selectedPaymentOption === 'google' ? 'border-[5px] border-[#050505] bg-white ring-2 ring-brand-pink' : 'border border-[#3f3f46]'}`}></div>
+                        <span className={`text-[15px] ${selectedPaymentOption === 'google' ? 'text-white font-bold' : 'text-[#a1a1aa]'}`}>Google Pay</span>
+                      </div>
+                      <div className="bg-white px-2 py-0.5 rounded text-black font-bold text-[11px] flex items-center gap-1">
+                        <span className="text-blue-500">G</span>Pay
+                      </div>
+                    </button>
+
+                    <button 
+                      onClick={() => setSelectedPaymentOption('card')}
+                      className={`flex items-center justify-between p-4 hover:bg-[#121214] transition-colors text-left ${selectedPaymentOption === 'card' ? 'bg-[#121214]' : ''}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-full ${selectedPaymentOption === 'card' ? 'border-[5px] border-[#050505] bg-white ring-2 ring-brand-pink' : 'border border-[#3f3f46]'}`}></div>
+                        <span className={`text-[15px] ${selectedPaymentOption === 'card' ? 'text-white font-bold' : 'text-[#a1a1aa]'}`}>Card</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <div className="bg-[#1a1f36] text-white px-1.5 py-0.5 rounded text-[9px] font-bold">VISA</div>
+                        <div className="bg-[#ff5f00] text-white px-1.5 py-0.5 rounded text-[9px] font-bold">MC</div>
+                        <div className="bg-[#007cc3] text-white px-1.5 py-0.5 rounded text-[9px] font-bold">AMEX</div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <button className="w-full bg-white text-black rounded-xl py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-200 active:scale-[0.98] transition-all mt-6">
+                    {selectedPaymentOption === 'apple' && <span>Pay with Apple Pay</span>}
+                    {selectedPaymentOption === 'google' && (
+                      <>
+                        <span>Pay with</span>
+                        <span className="flex items-center gap-0.5"><span className="text-blue-600">G</span>Pay</span>
+                      </>
+                    )}
+                    {selectedPaymentOption === 'card' && <span>Pay with Card</span>}
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-[#121214] border border-brand-green/30 rounded-[20px] p-6 flex flex-col">
+                  <h3 className="text-white font-black text-xl mb-2">Ready to dispatch via WhatsApp?</h3>
+                  <p className="text-[#a1a1aa] text-[14px] leading-relaxed mb-6">
+                    Tapping confirm will open WhatsApp to send your order details directly to Renee. Remember to pay cash or card upon arrival!
+                  </p>
+                  
+                  <button className="w-full bg-brand-green text-black rounded-xl py-4 font-bold flex items-center justify-center gap-2 hover:bg-opacity-90 active:scale-[0.98] transition-all">
+                    <Phone className="w-5 h-5" />
+                    <span className="text-[16px]">Confirm Order</span>
+                  </button>
+                </div>
+              )}
+
+            </div>
+          </div>
+        )}
+        
+        {/* Customize Modal Overlay */}
+        {selectedItem && (
+          <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div className="bg-[#121214] border border-brand-pink/50 rounded-2xl w-full max-w-[400px] shadow-[0_0_20px_rgba(255,20,147,0.15)] flex flex-col relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              
+              {/* Close Button */}
+              <button 
+                onClick={() => setSelectedItem(null)}
+                className="absolute top-4 right-4 text-[#a1a1aa] hover:text-white transition-colors p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="p-6 pb-5">
+                <h2 className="text-xl font-black text-white pr-8 leading-tight">
+                  Customize: {selectedItem.name}
+                </h2>
+                <p className="text-brand-pink font-bold mt-1.5 text-[15px]">
+                  Base: {selectedItem.price}
+                </p>
+              </div>
+
+              <div className="px-6 pb-6 flex flex-col gap-6">
+                
+                {/* Variant Size */}
+                <div className="flex flex-col gap-3">
+                  <span className="text-[11px] font-bold text-[#a1a1aa] tracking-wider">SELECT VARIANT SIZE</span>
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={() => setVariant('single')}
+                      className={`flex-1 rounded-xl p-4 flex flex-col items-center justify-center gap-1 transition-all ${
+                        variant === 'single' 
+                          ? 'bg-[#2a131c] border border-brand-pink' 
+                          : 'bg-[#1c1c1f] border border-transparent'
+                      }`}
+                    >
+                      <span className={`font-bold text-[14px] ${variant === 'single' ? 'text-white' : 'text-[#a1a1aa]'}`}>Single (1x)</span>
+                      <span className={`text-[12px] ${variant === 'single' ? 'text-brand-pink' : 'text-[#71717a]'}`}>
+                        {selectedItem.price}
+                      </span>
+                    </button>
+                    <button 
+                      onClick={() => setVariant('double')}
+                      className={`flex-1 rounded-xl p-4 flex flex-col items-center justify-center gap-1 transition-all ${
+                        variant === 'double' 
+                          ? 'bg-[#2a131c] border border-brand-pink' 
+                          : 'bg-[#1c1c1f] border border-transparent'
+                      }`}
+                    >
+                      <span className={`font-bold text-[14px] ${variant === 'double' ? 'text-white' : 'text-[#a1a1aa]'}`}>Double (2x)</span>
+                      <span className={`text-[12px] ${variant === 'double' ? 'text-brand-pink' : 'text-[#71717a]'}`}>
+                         R{parseInt(selectedItem.price.replace('R', '')) + 10}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Add-ons */}
+                <button 
+                  onClick={() => setHasIceCream(!hasIceCream)}
+                  className="bg-[#1c1c1f] rounded-xl p-4 flex items-center justify-between border border-[#27272a] text-left hover:bg-[#27272a] transition-colors active:scale-[0.99]"
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-white font-bold text-[14px]">Add Vanilla Ice-Cream</span>
+                    <span className="text-[#a1a1aa] text-[12px]">Sit-down counter orders only</span>
+                  </div>
+                  <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
+                    hasIceCream ? 'bg-brand-pink border-brand-pink' : 'border-[#3f3f46]'
+                  }`}>
+                    {hasIceCream && <CheckSquare className="w-4 h-4 text-white" strokeWidth={3} />}
+                  </div>
+                </button>
+
+                {/* Quantity */}
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-[13px] font-bold text-white tracking-wider">QUANTITY</span>
+                  <div className="flex items-center gap-4">
+                    <button 
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-9 h-9 rounded-full bg-[#1c1c1f] flex items-center justify-center text-white hover:bg-[#27272a] active:scale-95 transition-all"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="w-4 text-center font-bold text-brand-pink text-[18px]">{quantity}</span>
+                    <button 
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="w-9 h-9 rounded-full bg-[#1c1c1f] flex items-center justify-center text-white hover:bg-[#27272a] active:scale-95 transition-all"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-3 pt-2">
+                  <button 
+                    className="w-full bg-brand-pink text-white rounded-xl py-4 font-bold flex items-center justify-center gap-2 hover:bg-brand-pink/90 active:scale-[0.98] transition-all"
+                    onClick={() => {
+                      handleAddToTray();
+                      setView('checkout');
+                    }}
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    <span>Add & Checkout Now — R{getCalculatedPrice()}</span>
+                  </button>
+                  <button 
+                    className="w-full bg-[#1c1c1f] text-white rounded-xl py-4 font-bold flex items-center justify-center hover:bg-[#27272a] active:scale-[0.98] transition-all"
+                    onClick={() => {
+                      handleAddToTray();
+                    }}
+                  >
+                    <span className="text-[#a1a1aa] mr-1">+</span> Add To Tray & Keep Browsing
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
